@@ -9,7 +9,7 @@ namespace Lab_1.Services
         Task Create(CreateInvestmentContainerDTO DTO, User Owner);
         Task<List<InvestmentContainer>> GetContainersList();
         Task AddSkin();
-        Task Delete(DeleteInvestmentContainerDTO model);
+        Task Delete(int containerId);
     }
 
     public class InvestmentContainerService : IInvestmentContainerService
@@ -35,7 +35,7 @@ namespace Lab_1.Services
 
         public async Task<List<InvestmentContainer>> GetContainersList ()
         {
-            var containersList = _context.InvestmentContainers.Include(x => x.Owner.Id).ToList();
+            var containersList = _context.InvestmentContainers.Include(x => x.Owner).ToList();
             if (containersList == null)
                 throw new Exception("No containers yet");
             return containersList;
@@ -46,9 +46,9 @@ namespace Lab_1.Services
 
         }
 
-        public async Task Delete(DeleteInvestmentContainerDTO model)
+        public async Task Delete(int containerId)
         {
-            var currentContainer = await _context.InvestmentContainers.FirstOrDefaultAsync(x => x.Id == model.Id);
+            var currentContainer = await _context.InvestmentContainers.FirstOrDefaultAsync(x => x.Id == containerId);
             if (currentContainer != default)
             {
                 _context.InvestmentContainers.Remove(currentContainer);

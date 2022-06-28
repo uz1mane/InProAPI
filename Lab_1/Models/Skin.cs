@@ -12,9 +12,11 @@ namespace Lab_1.Models
         public double BoughtFor { get; set; }
         [Required]
         public int Amount { get; set; }
+        [Required]
         public int PercentGoal { get; set; }
 
-        public InvestmentContainer InvestmentBag { get; set; } 
+        [Required]
+        public InvestmentContainer container { get; set; } 
 
 
     }

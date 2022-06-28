@@ -1,12 +1,15 @@
 ﻿using Lab_1.Models;
 using Lab_1.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lab_1.Services
 {
     public interface ISkinsService
     {
-        
+        Task AddSkin(AddSkinDTO DTO, InvestmentContainer container);
+        Task<List<AddSkinDTO>> GetContainerContent(int containerId);
+        Task Delete(int skinId);
     }
 
     public class SkinsService : ISkinsService
@@ -19,27 +22,54 @@ namespace Lab_1.Services
             _context = context;
         }
 
-        public async Task Create(CreateInvestmentContainerDTO DTO, User Owner)
+        public async Task AddSkin(AddSkinDTO DTO, InvestmentContainer container)
         {
-            
-        }
-
-        public async Task<List<InvestmentContainer>> GetContainersList()
-        {
-            
-        }
-
-        public async Task AddSkin()
-        {
-
-        }
-
-        public async Task Delete(DeleteInvestmentContainerDTO model)
-        {
-            var currentContainer = await _context.InvestmentContainers.FirstOrDefaultAsync(x => x.Id == model.Id);
-            if (currentContainer != default)
+            /*var container = await _context.InvestmentContainers.FirstOrDefaultAsync(x => x.Id == DTO.containerId);
+            if (container == null)
             {
-                _context.InvestmentContainers.Remove(currentContainer);
+                throw new Exception("No such container found");
+            }*/
+
+            _context.Skins.Add(new Skin
+            {
+                Name = DTO.Name,
+                Amount = DTO.Amount,
+                BoughtFor = DTO.BoudghtFor,
+                PercentGoal = DTO.PercentGoal,
+                container = container
+            });
+
+            await _context.SaveChangesAsync();
+            return;
+        }
+
+        public async Task<List<AddSkinDTO>> GetContainerContent(int containerId)
+        {
+            var container = await _context.InvestmentContainers.Include(x => x.Skins).FirstOrDefaultAsync(x => x.Id == containerId);
+            if (container == default)
+                throw new Exception("Such container doesn't exist.");
+
+            var skins = await _context.Skins.Where(x => x.container == container).Select(x => new AddSkinDTO
+            {
+                Name = x.Name,
+                BoudghtFor = x.BoughtFor,
+                PercentGoal = x.PercentGoal,
+                Amount = x.Amount,
+                containerId = x.container.Id
+            }).ToListAsync();
+            if (skins.Count != 0)
+            {
+                return skins;
+            }
+            else throw new Exception("This container has no skins.");
+        }       
+
+        public async Task Delete(int skinId)
+        {
+            var currentSkin = await _context.Skins.FirstOrDefaultAsync(x => x.Id == skinId);
+            if (currentSkin != default)
+            {
+                _context.Skins.Remove(currentSkin);
                 await _context.SaveChangesAsync();
                 return;
             }

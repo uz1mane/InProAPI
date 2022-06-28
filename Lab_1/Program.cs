@@ -47,6 +47,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IInvestmentContainerService, InvestmentContainerService>();
+builder.Services.AddScoped<ISkinsService, SkinsService>();
 
 
 // DB:

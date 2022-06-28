@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace Lab_1.Controllers
 {
-    [Route("api/InvestmentBag")]
+    [Route("api/InvestmentContainer")]
     [ApiController]
     public class InvestmentContainerController : ControllerBase
     {
@@ -67,16 +67,16 @@ namespace Lab_1.Controllers
             }                        
         }
 
-        [HttpDelete("Delete"), ActionName("Delete Investment Bag")]
+        [HttpDelete("Delete/{containerId}"), ActionName("Delete Investment Bag")]
         [Authorize]
-        public async Task<IActionResult> DeleteInverstmentContainer(DeleteInvestmentContainerDTO model)
+        public async Task<IActionResult> DeleteInverstmentContainer(int containerId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                await _investmentContainerService.Delete(model);
+                await _investmentContainerService.Delete(containerId);
                 return Ok("Success!");
             }
             catch (Exception ex)
