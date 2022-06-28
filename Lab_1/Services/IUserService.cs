@@ -8,7 +8,7 @@ namespace Lab_1.Services
     public interface IUserService
     {
         Task CreateUser(RegistrationDTO model);             
-        Task ChangePassword(EditUserDataDTO userData, int id);
+        Task ChangePassword(EditUserDataDTO userData, string id);
         Task DeleteUser(int id);
         bool CheckIfUserChecksHimself(int userId, HttpContext context);
         bool CheckIfUserIsAdmin(HttpContext context);
@@ -34,9 +34,9 @@ namespace Lab_1.Services
             await _context.SaveChangesAsync();
         }            
 
-        public async Task ChangePassword(EditUserDataDTO userData, int id)
+        public async Task ChangePassword(EditUserDataDTO userData, string id)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == id);
             if (user != default)
             {
                 if (userData.Password != null)

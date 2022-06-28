@@ -11,6 +11,7 @@ using Lab_1.Models;
 using Lab_1.Services;
 using Microsoft.AspNetCore.Authorization;
 using Lab_1.Models.DTO;
+using System.Security.Claims;
 
 namespace Lab_1.Controllers
 {   
@@ -37,11 +38,13 @@ namespace Lab_1.Controllers
             Description = "Edit data for concrete user (except edit role)"
         )]
         [Authorize]
-        public async Task<IActionResult> ChangePassword(EditUserDataDTO editData ,int userId)
+        public async Task<IActionResult> ChangePassword(EditUserDataDTO dto)
         {
+            var currentIdentity = User.Identity as ClaimsIdentity;
+            var currentUserId = currentIdentity.FindFirst("id").Value;
             try
             {
-                await _userService.ChangePassword(editData, userId);
+                await _userService.ChangePassword(dto, currentUserId);
                 return Ok("Success!");
             }
             catch (Exception ex)

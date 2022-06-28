@@ -14,7 +14,7 @@ namespace Lab_1.Models
         public int Amount { get; set; }
         public int PercentGoal { get; set; }
 
-        public InvestmentBag InvestmentBag { get; set; } 
+        public InvestmentContainer InvestmentBag { get; set; } 
 
 
     }
